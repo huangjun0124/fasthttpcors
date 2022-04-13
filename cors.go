@@ -16,7 +16,8 @@ type Options struct {
 	AllowedMethods   []string
 	ExposedHeaders   []string
 	AllowCredentials bool
-	Debug            bool
+	Debug            bool // 是否开启默认日志
+	Logger           Logger
 }
 
 type CorsHandler struct {
@@ -42,6 +43,12 @@ func DefaultHandler() *CorsHandler {
 }
 
 func NewCorsHandler(options Options) *CorsHandler {
+	logger := OffLogger()
+	if options.Logger != nil {
+		logger = options.Logger
+	} else if options.Debug {
+		logger = NewLogger(os.Stdout)
+	}
 	cors := &CorsHandler{
 		allowedOrigins:   options.AllowedOrigins,
 		allowedHeaders:   options.AllowedHeaders,
@@ -49,11 +56,7 @@ func NewCorsHandler(options Options) *CorsHandler {
 		allowedMethods:   options.AllowedMethods,
 		exposedHeaders:   options.ExposedHeaders,
 		maxAge:           options.AllowMaxAge,
-		logger:           OffLogger(),
-	}
-
-	if options.Debug {
-		cors.logger = NewLogger(os.Stdout)
+		logger:           logger,
 	}
 
 	if len(cors.allowedOrigins) == 0 {
@@ -132,8 +135,10 @@ func (c *CorsHandler) handlePreflight(ctx *fasthttp.RequestCtx) {
 
 func (c *CorsHandler) handleActual(ctx *fasthttp.RequestCtx) {
 	originHeader := string(ctx.Request.Header.Peek("Origin"))
-	if len(originHeader) == 0 || c.isAllowedOrigin(originHeader) == false {
-		c.logger.Log("Origin ", originHeader, " is not in", c.allowedOrigins)
+	if len(originHeader) == 0 {
+		if c.isAllowedOrigin(originHeader) == false {
+			c.logger.Log("Origin ", originHeader, " is not in", c.allowedOrigins)
+		}
 		return
 	}
 	ctx.Response.Header.Set("Access-Control-Allow-Origin", originHeader)

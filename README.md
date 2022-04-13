@@ -1,27 +1,14 @@
 # fasthttpcors
-[![Go Report Card](https://goreportcard.com/badge/github.com/AdhityaRamadhanus/fasthttpcors)](https://goreportcard.com/report/github.com/AdhityaRamadhanus/fasthttpcors)
-
 Cors handler for fasthttp server
-
-<p>
-  <a href="#ReadFirst">Read First | </a>
-  <a href="#Installation">Installation |</a>
-  <a href="#Usage">Usage</a> |
-  <a href="#licenses">License</a>
-  <br><br>
-  <blockquote>
-	Handling CORS in fasthttp
-  </blockquote>
-</p>
 
 Read First
 ------------
-* This handler is heavily "inspired" by this work https://github.com/rs/cors/
+* This handler is forked from https://github.com/AdhityaRamadhanus/fasthttpcors, adding log input
 * This handler comply to w3c spec of CORS (even in case-insensitive comparison) https://www.w3.org/TR/cors/
 
 Installation
 ------------
-* go get github.com/adhityaramadhanus/fasthttpcors
+* go get github.com/huangjun0124/fasthttpcors
 
 Usage
 ------------
@@ -31,7 +18,7 @@ package main
 import (
 	"log"
 
-	cors "github.com/AdhityaRamadhanus/fasthttpcors"
+	cors "github.com/huangjun0124/fasthttpcors"
 	"github.com/valyala/fasthttp"
 )
 
@@ -63,9 +50,3 @@ func RequestHandler(ctx *fasthttp.RequestCtx) {
 TODO
 -----
 * add test
-
-License
-----
-
-MIT © [Adhitya Ramadhanus]
-
