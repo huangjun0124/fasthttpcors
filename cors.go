@@ -136,7 +136,7 @@ func (c *CorsHandler) handlePreflight(ctx *fasthttp.RequestCtx) {
 func (c *CorsHandler) handleActual(ctx *fasthttp.RequestCtx) {
 	originHeader := string(ctx.Request.Header.Peek("Origin"))
 	if len(originHeader) == 0 || c.isAllowedOrigin(originHeader) == false {
-		if c.isAllowedOrigin(originHeader) == false {
+		if len(originHeader) != 0 {
 			c.logger.Log("Origin ", originHeader, " is not in", c.allowedOrigins)
 		}
 		return
