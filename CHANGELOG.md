@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.0.2](https://github.com/huangjun0124/fasthttpcors/compare/v1.0.1...v1.0.2) (2022-04-13)
+
+
+### Features
+
+* log opt ([627e27f](https://github.com/huangjun0124/fasthttpcors/commit/627e27f52fc6a90afacfd7552d214b2005cd620e))
+
 ### [1.0.1](https://github.com/huangjun0124/fasthttpcors/compare/v1.0.0...v1.0.1) (2022-04-13)
 
 
