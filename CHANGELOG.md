@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/huangjun0124/fasthttpcors/compare/v1.0.2...v1.2.0) (2022-06-09)
+
+
+### Features
+
+* add change allowedorigin dynamiclly ([85d7ccf](https://github.com/huangjun0124/fasthttpcors/commit/85d7ccf94f4c65041f7a94bb2e67fed3c1c54337))
+
 ### [1.0.2](https://github.com/huangjun0124/fasthttpcors/compare/v1.0.1...v1.0.2) (2022-04-13)
 
 
