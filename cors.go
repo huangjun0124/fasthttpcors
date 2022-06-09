@@ -58,19 +58,7 @@ func NewCorsHandler(options Options) *CorsHandler {
 		maxAge:           options.AllowMaxAge,
 		logger:           logger,
 	}
-
-	if len(cors.allowedOrigins) == 0 {
-		cors.allowedOrigins = defaultOptions.AllowedOrigins
-		cors.allowedOriginsAll = true
-	} else {
-		for _, v := range options.AllowedOrigins {
-			if v == "*" {
-				cors.allowedOrigins = defaultOptions.AllowedOrigins
-				cors.allowedOriginsAll = true
-				break
-			}
-		}
-	}
+	cors.RefreshAllowOrigins(options.AllowedOrigins)
 	if len(cors.allowedHeaders) == 0 {
 		cors.allowedHeaders = defaultOptions.AllowedHeaders
 		cors.allowedHeadersAll = true
@@ -86,6 +74,28 @@ func NewCorsHandler(options Options) *CorsHandler {
 		cors.allowedMethods = defaultOptions.AllowedMethods
 	}
 	return cors
+}
+
+// RefreshAllowOrigins
+//  @desc: 支持运行时动态刷新 allowedOrigins 配置
+//  @receiver c
+//  @para allowedOrigins
+//
+func (c *CorsHandler) RefreshAllowOrigins(allowedOrigins []string) {
+	if len(allowedOrigins) == 0 {
+		c.allowedOrigins = defaultOptions.AllowedOrigins
+		c.allowedOriginsAll = true
+	} else {
+		c.allowedOrigins = allowedOrigins
+		c.allowedOriginsAll = false
+		for _, v := range c.allowedOrigins {
+			if v == "*" {
+				c.allowedOrigins = defaultOptions.AllowedOrigins
+				c.allowedOriginsAll = true
+				break
+			}
+		}
+	}
 }
 
 func (c *CorsHandler) CorsMiddleware(innerHandler fasthttp.RequestHandler) fasthttp.RequestHandler {
