@@ -3,7 +3,8 @@ Cors handler for fasthttp server
 
 Read First
 ------------
-* This handler is forked from https://github.com/AdhityaRamadhanus/fasthttpcors, adding log input
+* This handler is forked from https://github.com/AdhityaRamadhanus/fasthttpcors
+* Adding log input, add allowOrigin config * (eg: http://*.mydomain.com)
 * This handler comply to w3c spec of CORS (even in case-insensitive comparison) https://www.w3.org/TR/cors/
 
 Installation
