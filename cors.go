@@ -22,14 +22,17 @@ type Options struct {
 
 type CorsHandler struct {
 	allowedOriginsAll bool
-	allowedOrigins    []string
 	allowedHeadersAll bool
-	allowedHeaders    []string
-	allowedMethods    []string
-	exposedHeaders    []string
-	allowCredentials  bool
-	maxAge            int
-	logger            Logger
+	// Normalized list of plain allowed origins
+	allowedOrigins []string
+	// List of allowed origins containing wildcards
+	allowedWOrigins  []wildcard
+	allowedHeaders   []string
+	allowedMethods   []string
+	exposedHeaders   []string
+	allowCredentials bool
+	maxAge           int
+	logger           Logger
 }
 
 var defaultOptions = &Options{
@@ -86,13 +89,23 @@ func (c *CorsHandler) RefreshAllowOrigins(allowedOrigins []string) {
 		c.allowedOrigins = defaultOptions.AllowedOrigins
 		c.allowedOriginsAll = true
 	} else {
-		c.allowedOrigins = allowedOrigins
-		c.allowedOriginsAll = false
-		for _, v := range c.allowedOrigins {
-			if v == "*" {
-				c.allowedOrigins = defaultOptions.AllowedOrigins
+		c.allowedOrigins = []string{}
+		c.allowedWOrigins = []wildcard{}
+		for _, origin := range allowedOrigins {
+			// Normalize
+			origin = strings.ToLower(origin)
+			if origin == "*" {
+				// If "*" is present in the list, turn the whole list into a match all
 				c.allowedOriginsAll = true
+				c.allowedOrigins = nil
+				c.allowedWOrigins = nil
 				break
+			} else if i := strings.IndexByte(origin, '*'); i >= 0 {
+				// Split the origin in two: start and end string without the *
+				w := wildcard{origin[0:i], origin[i+1:]}
+				c.allowedWOrigins = append(c.allowedWOrigins, w)
+			} else {
+				c.allowedOrigins = append(c.allowedOrigins, origin)
 			}
 		}
 	}
@@ -164,8 +177,14 @@ func (c *CorsHandler) isAllowedOrigin(originHeader string) bool {
 	if c.allowedOriginsAll {
 		return true
 	}
-	for _, val := range c.allowedOrigins {
-		if val == originHeader {
+	originHeader = strings.ToLower(originHeader)
+	for _, o := range c.allowedOrigins {
+		if o == originHeader {
+			return true
+		}
+	}
+	for _, w := range c.allowedWOrigins {
+		if w.match(originHeader) {
 			return true
 		}
 	}
